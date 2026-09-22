@@ -180,7 +180,7 @@ func Register(c *gin.Context) {
 	}
 	affCode := user.AffCode // this code is the inviter's code, not the user's own code
 	inviterId, _ := model.GetUserIdByAffCode(affCode)
-	UserGroup, _ := config.OptionMap["UserGroup"]
+	UserGroup := config.GetOption("UserGroup")
 	cleanUser := model.User{
 		Username:    user.Username,
 		Password:    user.Password,
@@ -948,7 +948,7 @@ func TopUp(c *gin.Context) {
 		})
 		return
 	}
-	GroupEnable, _ := strconv.ParseBool(config.OptionMap["GroupEnable"])
+	GroupEnable, _ := strconv.ParseBool(config.GetOption("GroupEnable"))
 	if GroupEnable {
 		err = model.VipUserQuota(id)
 		if err != nil {

@@ -88,7 +88,7 @@ func Relay(c *gin.Context) {
 
 		channel, err := model.CacheGetRandomSatisfiedChannel(group, originalModel, i != retryTimes, isTools, isClaudeOriginalRequest, failedChannelIds, i)
 		if err != nil {
-			common.Errorf(ctx, "CacheGetRandomSatisfiedChannel failed: %w", err)
+			common.Errorf(ctx, "CacheGetRandomSatisfiedChannel failed: %v", err)
 			break
 		}
 

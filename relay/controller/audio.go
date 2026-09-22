@@ -100,8 +100,8 @@ func RelayAudioHelper(c *gin.Context, relayMode int) *dbmodel.ErrorWithStatusCod
 	var preConsumedQuota int
 
 	// 计算预扣费额度
-	BillingByRequestEnabled, _ := strconv.ParseBool(config.OptionMap["BillingByRequestEnabled"])
-	ModelRatioEnabled, _ := strconv.ParseBool(config.OptionMap["ModelRatioEnabled"])
+	BillingByRequestEnabled, _ := strconv.ParseBool(config.GetOption("BillingByRequestEnabled"))
+	ModelRatioEnabled, _ := strconv.ParseBool(config.GetOption("ModelRatioEnabled"))
 	preConsumedQuota = int(float64(preConsumedTokens) * ratio)
 
 	if BillingByRequestEnabled {

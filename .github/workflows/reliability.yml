@@ -1,0 +1,17 @@
+name: Reliability regression tests
+on:
+  push:
+    branches: [main, 'fix/**']
+  pull_request:
+jobs:
+  race:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.1'
+          cache: true
+      - run: go test -race ./router ./common ./common/config

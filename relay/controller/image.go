@@ -111,8 +111,8 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 	if err != nil {
 		log.Println("获取token出错:", err)
 	}
-	BillingByRequestEnabled, _ := strconv.ParseBool(config.OptionMap["BillingByRequestEnabled"])
-	ModelRatioEnabled, _ := strconv.ParseBool(config.OptionMap["ModelRatioEnabled"])
+	BillingByRequestEnabled, _ := strconv.ParseBool(config.GetOption("BillingByRequestEnabled"))
+	ModelRatioEnabled, _ := strconv.ParseBool(config.GetOption("ModelRatioEnabled"))
 	quota = int(ratio*sizeRatio*imageCostRatio*1000) * imageRequest.N
 	modelRatioString = fmt.Sprintf("模型倍率 %.2f", modelRatio)
 

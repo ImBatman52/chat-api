@@ -80,7 +80,7 @@ func GetGroupModelsBilling(group string, search string) ([]ModelBillingInfo, err
 
 	modelRatio := make(ModelRatios)
 	if len(modelRatio) == 0 {
-		jsonStr := config.OptionMap["ModelRatio"]
+		jsonStr := config.GetOption("ModelRatio")
 		if jsonStr == "" {
 			jsonStr = common.ModelRatioJSONString()
 		}

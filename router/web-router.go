@@ -15,15 +15,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var userScriptPattern = regexp.MustCompile(`static/js/main\.[a-z0-9]+\.js"`)
+
 func serveUserIndexPage(c *gin.Context) {
 	// 从Gin上下文中获取默认的用户索引页面
 	userIndexPage := c.MustGet("defaultUserIndexPage").([]byte)
 	userIndexPageStr := string(userIndexPage)
 	// 尝试从公共选项映射中获取系统文本
-	systemText, exists := config.OptionMap["SystemText"]
+	systemText := config.GetOption("SystemText")
 
 	// 正则表达式用于查找和替换script标签中的src属性
-	re := regexp.MustCompile(`static/js/main\.[a-z0-9]+\.js"`)
+	re := userScriptPattern
 
 	// 从userIndexPage中提取当前JS文件名
 	matches := re.FindStringSubmatch(userIndexPageStr)
@@ -33,17 +35,14 @@ func serveUserIndexPage(c *gin.Context) {
 	}
 	currentScriptTag := matches[0]
 
-	if !exists || systemText == "" {
+	if systemText == "" {
 		// 如果系统文本不存在或为空，直接使用默认页面
-		config.SystemText = userIndexPageStr
-		config.OptionMap["SystemText"] = config.SystemText
 		c.Data(http.StatusOK, "text/html; charset=utf-8", userIndexPage)
 		return
 	}
 
 	// 如果系统文本存在，更新其script标签
 	updatedSystemText := re.ReplaceAllString(systemText, currentScriptTag)
-	config.OptionMap["SystemText"] = updatedSystemText
 
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(updatedSystemText))
 }

@@ -46,6 +46,14 @@ var SessionSecret = uuid.New().String()
 
 var OptionMap map[string]string
 var OptionMapRWMutex sync.RWMutex
+
+// GetOption returns a snapshot while configuration updates hold the write lock.
+func GetOption(key string) string {
+	OptionMapRWMutex.RLock()
+	defer OptionMapRWMutex.RUnlock()
+	return OptionMap[key]
+}
+
 var ItemsPerPage = 10
 var MaxRecentItems = 100
 

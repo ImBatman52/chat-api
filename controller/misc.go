@@ -13,6 +13,8 @@ import (
 )
 
 func GetStatus(c *gin.Context) {
+	config.OptionMapRWMutex.RLock()
+	defer config.OptionMapRWMutex.RUnlock()
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
