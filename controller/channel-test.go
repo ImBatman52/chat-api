@@ -267,7 +267,7 @@ var testAllChannelsRunning bool = false
 
 // disableChannel 禁用通道并发送通知
 func disableChannel(channelId int, channelName string, reason string) {
-	notificationEmail := config.OptionMap["NotificationEmail"]
+	notificationEmail := config.GetOption("NotificationEmail")
 	if notificationEmail == "" {
 		// 如果没有设置专门的通知邮箱，则尝试获取 RootUserEmail
 		if config.RootUserEmail == "" {
@@ -283,7 +283,7 @@ func disableChannel(channelId int, channelName string, reason string) {
 	content := fmt.Sprintf("通道「%s」（#%d）已被禁用，原因：%s", channelName, channelId, reason)
 
 	// 发送电子邮件通知
-	emailNotifEnabled, _ := strconv.ParseBool(config.OptionMap["EmailNotificationsEnabled"])
+	emailNotifEnabled, _ := strconv.ParseBool(config.GetOption("EmailNotificationsEnabled"))
 	if emailNotifEnabled {
 		err := common.SendEmail(subject, notificationEmail, content)
 		if err != nil {
@@ -292,7 +292,7 @@ func disableChannel(channelId int, channelName string, reason string) {
 	}
 
 	// 发送WxPusher通知
-	wxNotifEnabled, _ := strconv.ParseBool(config.OptionMap["WxPusherNotificationsEnabled"])
+	wxNotifEnabled, _ := strconv.ParseBool(config.GetOption("WxPusherNotificationsEnabled"))
 	if wxNotifEnabled {
 		err := SendWxPusherNotification(subject, content)
 		if err != nil {
@@ -302,7 +302,7 @@ func disableChannel(channelId int, channelName string, reason string) {
 }
 
 func testAllChannels(notify bool) error {
-	notificationEmail := config.OptionMap["NotificationEmail"]
+	notificationEmail := config.GetOption("NotificationEmail")
 	if notificationEmail == "" {
 		// 如果没有设置专门的通知邮箱，则尝试获取 RootUserEmail
 		if config.RootUserEmail == "" {
@@ -378,7 +378,7 @@ func testAllChannels(notify bool) error {
 		testAllChannelsLock.Unlock()
 		if notify {
 			// 发送电子邮件通知
-			emailNotifEnabled, _ := strconv.ParseBool(config.OptionMap["EmailNotificationsEnabled"])
+			emailNotifEnabled, _ := strconv.ParseBool(config.GetOption("EmailNotificationsEnabled"))
 			if emailNotifEnabled {
 				err := common.SendEmail("通道测试完成", notificationEmail, "通道测试完成，如果没有收到禁用通知，说明所有通道都正常")
 				if err != nil {
@@ -387,7 +387,7 @@ func testAllChannels(notify bool) error {
 			}
 
 			// 发送WxPusher通知
-			wxNotifEnabled, _ := strconv.ParseBool(config.OptionMap["WxPusherNotificationsEnabled"])
+			wxNotifEnabled, _ := strconv.ParseBool(config.GetOption("WxPusherNotificationsEnabled"))
 			if wxNotifEnabled {
 				err = SendWxPusherNotification("通道测试完成", "通道测试完成，如果没有收到禁用通知，说明所有通道都正常")
 				if err != nil {
@@ -474,9 +474,9 @@ func testChannelAndHandleResult(channel *model.Channel, testInterval time.Durati
 
 // notifyChannelEnabled发送通道已重新启用的通知
 func notifyChannelEnabled(channel *model.Channel) {
-	emailNotifEnabled, _ := strconv.ParseBool(config.OptionMap["EmailNotificationsEnabled"])
+	emailNotifEnabled, _ := strconv.ParseBool(config.GetOption("EmailNotificationsEnabled"))
 	if emailNotifEnabled {
-		notificationEmail := config.OptionMap["NotificationEmail"]
+		notificationEmail := config.GetOption("NotificationEmail")
 		if notificationEmail == "" {
 			// 如果没有设置专门的通知邮箱，则尝试获取 RootUserEmail
 			if config.RootUserEmail == "" {
@@ -494,7 +494,7 @@ func notifyChannelEnabled(channel *model.Channel) {
 }
 
 func notifyWxPusherEnabled(channel *model.Channel) {
-	wxNotifEnabled, _ := strconv.ParseBool(config.OptionMap["WxPusherNotificationsEnabled"])
+	wxNotifEnabled, _ := strconv.ParseBool(config.GetOption("WxPusherNotificationsEnabled"))
 	if wxNotifEnabled {
 		subject := fmt.Sprintf("通道「%s」（#%d）已恢复启用", channel.Name, channel.Id)
 		content := "通道成功通过了测试，并已重新启用。"

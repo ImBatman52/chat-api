@@ -36,6 +36,7 @@ var adminIndexPage []byte
 var userIndexPage []byte
 
 func main() {
+	common.Init()
 	common.SetupLogger()
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found or error loading")
@@ -141,6 +142,7 @@ func main() {
 	store := cookie.NewStore([]byte(config.SessionSecret))
 	server.Use(sessions.Sessions("session", store))
 
+	server.GET("/healthz", controller.Health)
 	router.SetRouter(server, adminFS, userFS, adminIndexPage, userIndexPage)
 	var port = os.Getenv("PORT")
 	if port == "" {

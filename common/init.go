@@ -23,7 +23,9 @@ func printHelp() {
 	fmt.Println("Usage: one-api [--port <port>] [--log-dir <log directory>] [--version] [--help]")
 }
 
-func init() {
+// Init parses application flags after package initialization. Parsing in init
+// prevents the Go test runner from registering its own flags.
+func Init() {
 	flag.Parse()
 
 	if *PrintVersion {

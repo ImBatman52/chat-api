@@ -322,7 +322,7 @@ func VipInsert(userid int, affquota int) error {
 		return err
 	}
 
-	proportionsStr, _ := config.OptionMap["ProporTions"]
+	proportionsStr := config.GetOption("ProporTions")
 	proportions, err := strconv.ParseFloat(proportionsStr, 64)
 	if err != nil {
 		return fmt.Errorf("invalid ProporTions value: %v", err)
@@ -553,9 +553,9 @@ func IncreaseUserQuota(id int, quota int) (err error) {
 }
 
 func VipUserQuota(id int) (err error) {
-	VipUserGroup := config.OptionMap["VipUserGroup"]
+	VipUserGroup := config.GetOption("VipUserGroup")
 	Group, _ := GetUserGroup(id)
-	UserGroup := config.OptionMap["UserGroup"]
+	UserGroup := config.GetOption("UserGroup")
 	if UserGroup == Group {
 		err = DB.Model(&User{}).Where("id = ?", id).Update("group", VipUserGroup).Error
 		return err

@@ -19,7 +19,7 @@ COPY web-admin ./web-admin
 RUN DISABLE_ESLINT_PLUGIN='true' REACT_APP_VERSION=$(cat VERSION) npm run build --prefix web-user
 RUN DISABLE_ESLINT_PLUGIN='true' REACT_APP_VERSION=$(cat VERSION) npm run build --prefix web-admin
 
-FROM golang:latest AS go-builder
+FROM golang:1.27.1 AS go-builder
 
 WORKDIR /build
 COPY go.mod go.sum ./
@@ -37,14 +37,16 @@ FROM alpine:latest
 
 RUN apk update \
     && apk upgrade \
-    && apk add --no-cache ca-certificates tzdata ffmpeg ffmpeg-tools \
+    && apk add --no-cache ca-certificates tzdata ffmpeg ffmpeg-tools sqlite \
     && update-ca-certificates 2>/dev/null || true \
     && rm -rf /var/cache/apk/*
 
 # 复制 Go 二进制文件
 COPY --from=go-builder /build/chat-api /chat-api
+COPY deploy/entrypoint.sh /usr/local/bin/batapi-entrypoint
+RUN chmod 755 /usr/local/bin/batapi-entrypoint
 
 EXPOSE 3000
 
 WORKDIR /data
-ENTRYPOINT ["/chat-api"]
+ENTRYPOINT ["/usr/local/bin/batapi-entrypoint"]

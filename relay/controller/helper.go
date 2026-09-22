@@ -203,8 +203,8 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *util.R
 	if err != nil {
 		openai.ErrorWrapper(err, "get_user_quota_failed", http.StatusInternalServerError)
 	}
-	BillingByRequestEnabled, _ := strconv.ParseBool(config.OptionMap["BillingByRequestEnabled"])
-	ModelRatioEnabled, _ := strconv.ParseBool(config.OptionMap["ModelRatioEnabled"])
+	BillingByRequestEnabled, _ := strconv.ParseBool(config.GetOption("BillingByRequestEnabled"))
+	ModelRatioEnabled, _ := strconv.ParseBool(config.GetOption("ModelRatioEnabled"))
 	modelRatioString := ""
 	quota := 0
 	completionRatio := common.GetCompletionRatio(textRequest.Model)
@@ -249,7 +249,7 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *util.R
 	logger.Info(ctx, fmt.Sprintf("用户%d 扣费%d，预扣费 %d 实际扣费 %d。", meta.UserId, quotaDelta, preConsumedQuota, quota))
 
 	multiplier := fmt.Sprintf("%s，分组倍率 %.2f", modelRatioString, groupRatio)
-	LogContentEnabled, _ := strconv.ParseBool(config.OptionMap["LogContentEnabled"])
+	LogContentEnabled, _ := strconv.ParseBool(config.GetOption("LogContentEnabled"))
 	logContent := ""
 	if LogContentEnabled {
 		logContent = fmt.Sprintf("用户: %s \nAI: %s", usertext, aitext)
@@ -330,8 +330,8 @@ func PostWssConsumeQuota(ctx *gin.Context, usage *relaymodel.RealtimeUsage, meta
 	audioRatio := common.GetAudioRatio(meta.OriginModelName)
 	audioCompletionRatio := common.GetAudioCompletionRatio(meta.OriginModelName)
 	// 获取计费相关配置
-	BillingByRequestEnabled, _ := strconv.ParseBool(config.OptionMap["BillingByRequestEnabled"])
-	ModelRatioEnabled, _ := strconv.ParseBool(config.OptionMap["ModelRatioEnabled"])
+	BillingByRequestEnabled, _ := strconv.ParseBool(config.GetOption("BillingByRequestEnabled"))
+	ModelRatioEnabled, _ := strconv.ParseBool(config.GetOption("ModelRatioEnabled"))
 	quota := int64(0)
 
 	modelQuota := fmt.Sprintf("模型倍率 %.2f，补全倍率 %.2f，音频倍率 %.2f，音频补全倍率 %.2f，分组倍率 %.2f", modelRatio, completionRatio, audioRatio, audioCompletionRatio, groupRatio)
