@@ -33,13 +33,13 @@ COPY --from=react-builder /app/web-admin/build ./web-admin/build
 # 构建 Go 二进制文件
 RUN go build -ldflags "-s -w -X 'one-api/common.Version=$(cat VERSION)' -extldflags '-static'" -o chat-api
 
-FROM alpine:latest
+FROM alpine:3.24.2
 
-RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache ca-certificates tzdata ffmpeg ffmpeg-tools sqlite \
-    && update-ca-certificates 2>/dev/null || true \
-    && rm -rf /var/cache/apk/*
+RUN apk add --no-cache ca-certificates tzdata ffmpeg sqlite \
+    && update-ca-certificates \
+    && command -v sqlite3 \
+    && command -v ffmpeg \
+    && command -v ffprobe
 
 # 复制 Go 二进制文件
 COPY --from=go-builder /build/chat-api /chat-api
